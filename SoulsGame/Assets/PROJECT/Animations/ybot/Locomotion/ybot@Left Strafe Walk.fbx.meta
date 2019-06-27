@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: a1810e84872defc42a530342c2034ee3
+guid: 94eac981474afdd4781ed25ff5f5b725
 ModelImporter:
   serializedVersion: 25
   internalIDToNameTable:
@@ -35,11 +35,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Jog Forward (1)
+      name: Left Strafe Walk
       takeName: mixamo.com
       internalID: -203655887218126122
       firstFrame: 0
-      lastFrame: 25
+      lastFrame: 28
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -50,8 +50,8 @@ ModelImporter:
       loopBlend: 0
       loopBlendOrientation: 1
       loopBlendPositionY: 1
-      loopBlendPositionXZ: 1
-      keepOriginalOrientation: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 1
       keepOriginalPositionY: 1
       keepOriginalPositionXZ: 0
       heightFromFeet: 0

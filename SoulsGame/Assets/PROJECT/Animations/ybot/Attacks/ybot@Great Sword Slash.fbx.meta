@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: f3c9b38c23ef216468513497e5a6fb75
+guid: 9e9ea54ae460c3747a1c2709c71edfcf
 ModelImporter:
   serializedVersion: 25
   internalIDToNameTable:
@@ -35,11 +35,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: mixamo.com
+      name: Great Sword Slash
       takeName: mixamo.com
       internalID: -203655887218126122
       firstFrame: 0
-      lastFrame: 1
+      lastFrame: 38
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -48,10 +48,10 @@ ModelImporter:
       hasAdditiveReferencePose: 0
       loopTime: 0
       loopBlend: 0
-      loopBlendOrientation: 0
-      loopBlendPositionY: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
       loopBlendPositionXZ: 0
-      keepOriginalOrientation: 0
+      keepOriginalOrientation: 1
       keepOriginalPositionY: 1
       keepOriginalPositionXZ: 0
       heightFromFeet: 0
@@ -98,11 +98,9 @@ ModelImporter:
     legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
-  referencedClips:
-  - 63b05f8b4a817974f98cf88f4a67cac2
-  - a09d258133132454ebe05ac5778e0760
+  referencedClips: []
   importAnimation: 1
-  copyAvatar: 0
+  copyAvatar: 1
   humanDescription:
     serializedVersion: 3
     human:
@@ -902,7 +900,8 @@ ModelImporter:
     hasTranslationDoF: 0
     hasExtraRoot: 1
     skeletonHasParents: 1
-  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: f3c9b38c23ef216468513497e5a6fb75,
+    type: 3}
   animationType: 3
   humanoidOversampling: 1
   additionalBone: 0
