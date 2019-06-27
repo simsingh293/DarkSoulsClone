@@ -6,7 +6,19 @@ public class InputHandler : MonoBehaviour
 {
     float vertical;
     float horizontal;
-    bool runInput;
+
+    // controller Variables
+    bool runInput; // or B/O button
+    bool a_Input;
+    bool x_Input;
+    bool y_Input;
+
+    bool rb_Input;
+    bool rt_Input;
+    float rt_axis;
+    bool lb_Input;
+    bool lt_Input;
+    float lt_axis;
 
     StateManager states;
     CameraManager cameraManager;
@@ -22,6 +34,7 @@ public class InputHandler : MonoBehaviour
         cameraManager = CameraManager.singleton;
         cameraManager.Init(this.transform);
     }
+
 
     private void FixedUpdate()
     {
@@ -39,12 +52,34 @@ public class InputHandler : MonoBehaviour
         states.Tick(delta);
     }
 
+
+
+
     void GetInput()
     {
         vertical = Input.GetAxis("Vertical");
         horizontal = Input.GetAxis("Horizontal");
         runInput = Input.GetButton("RunInput");
+
+        rb_Input = Input.GetButton("RB");
+
+        lb_Input = Input.GetButton("LB");
         
+        rt_Input = Input.GetButton("RT"); // for keyboard
+        //rt_axis = Input.GetAxis("RT"); // for controller
+        //if(rt_axis != 0)
+        //{
+        //    rt_Input = true;
+        //}
+        
+        lt_Input = Input.GetButton("LT"); // for keyboard
+        //lt_axis = Input.GetAxis("LT"); // for controller
+        //if (lt_axis != 0)
+        //{
+        //    lt_Input = true;
+        //}
+
+        //Debug.Log(rb_Input);
     }
 
     void UpdateStates()
@@ -68,5 +103,13 @@ public class InputHandler : MonoBehaviour
         {
             states.run = false;
         }
+
+        
+        states.rb = rb_Input;
+        states.rt = rt_Input;
+        states.lb = lb_Input;
+        states.lt = lt_Input;
+
+
     }
 }

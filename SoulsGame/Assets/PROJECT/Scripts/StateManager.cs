@@ -14,20 +14,26 @@ public class StateManager : MonoBehaviour
     public bool onGround;
     public bool run;
     public bool lockOn;
+    public bool attacking;
+    public bool canMove;
 
     [Header("Inputs")]
     public float vertical;
     public float horizontal;
     public float moveAmount;
     public Vector3 moveDir;
+    public bool rt, rb, lt, lb;
 
     [Header("Components")]
     public GameObject _activeModel;
     public Animator _anim;
     public Rigidbody _rb;
+    public AnimatorHook a_hook;
 
     public float delta;
     public LayerMask ignoreLayers;
+
+    float _actionDelay;
 
     public void Init()
     {
@@ -36,6 +42,9 @@ public class StateManager : MonoBehaviour
         _rb.angularDrag = 999;
         _rb.drag = 4;
         _rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+
+        a_hook = _activeModel.AddComponent<AnimatorHook>();
+        a_hook.Init(this);
 
         gameObject.layer = 8;
         ignoreLayers = ~(1 << 9);
@@ -46,6 +55,33 @@ public class StateManager : MonoBehaviour
     public void FixedTick(float d)
     {
         delta = d;
+
+        DetectAction();
+
+        if (attacking)
+        {
+            _anim.applyRootMotion = true;
+
+            _actionDelay += delta;
+            if(_actionDelay > 0.3f)
+            {
+                attacking = false;
+                _actionDelay = 0;
+            }
+            else
+            {
+                return;
+            }
+        }
+
+        canMove = _anim.GetBool("CanMove");
+
+        if (!canMove)
+        {
+            return;
+        }
+
+        _anim.applyRootMotion = false;
 
 
         if(moveAmount > 0 || !onGround )
@@ -101,6 +137,34 @@ public class StateManager : MonoBehaviour
 
         _anim.SetBool("OnGround", onGround);
     }
+
+
+    public void DetectAction()
+    {
+        if(!canMove) { return;  }
+
+
+
+        if(!rb && !rt && !lb && !lt) { return; }
+
+        string targetAnim = null;
+
+        if (rb) { targetAnim = "OH_Slash 1"; }
+        if (rt) { targetAnim = "OH_Slash 2"; }
+        if (lb) { targetAnim = "OH_Slash 3"; }
+        if (lt) { targetAnim = "TH_Slash 1"; }
+
+        if(string.IsNullOrEmpty(targetAnim))
+        {
+            return;
+        }
+
+        canMove = false;
+        attacking = true;
+        _anim.CrossFade(targetAnim, 0.2f);
+        //_rb.velocity = Vector3.zero;
+    }
+
 
     public bool OnGround()
     {
