@@ -8,7 +8,7 @@ public class InputHandler : MonoBehaviour
     float horizontal;
 
     // controller Variables
-    bool runInput; // or B/O button
+    bool b_Input; // or B/O button
     bool a_Input;
     bool x_Input;
     bool y_Input;
@@ -59,20 +59,33 @@ public class InputHandler : MonoBehaviour
     {
         vertical = Input.GetAxis("Vertical");
         horizontal = Input.GetAxis("Horizontal");
-        runInput = Input.GetButton("RunInput");
+
+
+
+        a_Input = Input.GetButton("A");
+        b_Input = Input.GetButton("B");
+        x_Input = Input.GetButton("X");
+        y_Input = Input.GetButton("Y");
 
         rb_Input = Input.GetButton("RB");
-
         lb_Input = Input.GetButton("LB");
-        
         rt_Input = Input.GetButton("RT"); // for keyboard
+        lt_Input = Input.GetButton("LT"); // for keyboard
+
+
+
+
+
+
+
+
+
         //rt_axis = Input.GetAxis("RT"); // for controller
         //if(rt_axis != 0)
         //{
         //    rt_Input = true;
         //}
         
-        lt_Input = Input.GetButton("LT"); // for keyboard
         //lt_axis = Input.GetAxis("LT"); // for controller
         //if (lt_axis != 0)
         //{
@@ -95,7 +108,7 @@ public class InputHandler : MonoBehaviour
         states.moveAmount = Mathf.Clamp01(m);
 
 
-        if (runInput)
+        if (b_Input)
         {
             states.run = (states.moveAmount > 0);
         }
@@ -109,6 +122,13 @@ public class InputHandler : MonoBehaviour
         states.rt = rt_Input;
         states.lb = lb_Input;
         states.lt = lt_Input;
+
+
+        if (y_Input)
+        {
+            states.isTwoHanded = !states.isTwoHanded;
+            states.HandleTwoHanded();
+        }
 
 
     }

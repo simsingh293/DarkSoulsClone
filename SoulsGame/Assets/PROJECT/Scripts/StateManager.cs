@@ -16,6 +16,7 @@ public class StateManager : MonoBehaviour
     public bool lockOn;
     public bool attacking;
     public bool canMove;
+    public bool isTwoHanded;
 
     [Header("Inputs")]
     public float vertical;
@@ -139,6 +140,10 @@ public class StateManager : MonoBehaviour
     }
 
 
+
+
+
+
     public void DetectAction()
     {
         if(!canMove) { return;  }
@@ -188,7 +193,10 @@ public class StateManager : MonoBehaviour
     }
 
 
-
+    public void HandleTwoHanded()
+    {
+        _anim.SetBool("TwoHanded", isTwoHanded);
+    }
 
 
     void HandleMovementAnimations()

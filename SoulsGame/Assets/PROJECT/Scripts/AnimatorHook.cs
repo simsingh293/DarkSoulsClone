@@ -16,6 +16,7 @@ public class AnimatorHook : MonoBehaviour
 
     private void OnAnimatorMove()
     {
+        // to account for root motion in the animation
         if (states.canMove)
         {
             return;

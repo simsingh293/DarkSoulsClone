@@ -206,9 +206,10 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 389700964}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.74, y: 1.12, z: 1.5537207}
+  m_LocalPosition: {x: 0, y: 1.12, z: 0}
   m_LocalScale: {x: 2.3617, y: 2.3617, z: 2.3617}
-  m_Children: []
+  m_Children:
+  - {fileID: 512270846}
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -297,11 +298,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 512270842}
   m_LocalRotation: {x: 0.31081164, y: -0, z: -0, w: 0.9504715}
-  m_LocalPosition: {x: 3.74, y: -0.12, z: 4.06}
-  m_LocalScale: {x: 2.3617, y: 2.3617, z: 5}
+  m_LocalPosition: {x: 0, y: -0.5250455, z: 1.0612183}
+  m_LocalScale: {x: 0.8482, y: 1, z: 2.1171188}
   m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_Father: {fileID: 389700968}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 36.216003, y: 0, z: 0}
 --- !u!1 &705507993
 GameObject:
@@ -753,7 +754,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lockon: 0
-  followSpeed: 3
+  followSpeed: 5
   mouseSpeed: 2
   controllerSpeed: 7
   target: {fileID: 0}
@@ -877,6 +878,7 @@ MonoBehaviour:
   lockOn: 0
   attacking: 0
   canMove: 0
+  isTwoHanded: 0
   vertical: 0
   horizontal: 0
   moveAmount: 0
@@ -943,7 +945,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2122247283}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.98, y: 2.44, z: 1.87}
+  m_LocalPosition: {x: 0, y: 10, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1198301831}
