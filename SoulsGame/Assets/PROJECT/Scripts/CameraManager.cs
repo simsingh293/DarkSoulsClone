@@ -11,9 +11,13 @@ public class CameraManager : MonoBehaviour
     public float controllerSpeed = 7;
 
     public Transform target;
+    public EnemyTarget lockOnTarget;
+    public Transform lockOnTransform;
 
     public Transform pivot;
     public Transform CameraTransform;
+
+    StateManager states;
 
     public float turnSmoothing = 0.1f;
     public float minAngle = -15;
@@ -26,6 +30,8 @@ public class CameraManager : MonoBehaviour
     public float lookAngle;
     public float tiltAngle;
 
+    bool usedRightAxis;
+
     public static CameraManager singleton;
 
     private void Awake()
@@ -37,9 +43,10 @@ public class CameraManager : MonoBehaviour
         singleton = this;
     }
 
-    public void Init(Transform t)
+    public void Init(StateManager state)
     {
-        target = t;
+        states = state;
+        target = state.transform;
 
         CameraTransform = Camera.main.transform;
         pivot = CameraTransform.parent;
@@ -56,6 +63,33 @@ public class CameraManager : MonoBehaviour
         float c_V = Input.GetAxis("RightJoystick Y");
 
         float targetSpeed = mouseSpeed;
+
+        if(lockOnTarget != null)
+        {
+            if(lockOnTransform == null)
+            {
+                lockOnTransform = lockOnTarget.GetTarget();
+                states.lockOnTransform = lockOnTransform;
+            }
+
+            if(Mathf.Abs(c_H) > 0.6f)
+            {
+                if (!usedRightAxis)
+                {
+                    lockOnTransform = lockOnTarget.GetTarget((c_H > 0));
+                    states.lockOnTransform = lockOnTransform;
+                    usedRightAxis = true;
+                } 
+            }
+        }
+
+        if (usedRightAxis)
+        {
+            if(Mathf.Abs(c_H) < 0.6f)
+            {
+                usedRightAxis = false;
+            }
+        }
 
         if(c_H != 0 || c_V != 0)
         {
@@ -88,18 +122,33 @@ public class CameraManager : MonoBehaviour
             smoothY = v;
         }
 
-        if (lockon)
-        {
+        tiltAngle -= smoothY * targetSpeed;
+        tiltAngle = Mathf.Clamp(tiltAngle, minAngle, maxAngle);
+        pivot.localRotation = Quaternion.Euler(tiltAngle, 0, 0);
+        
 
+
+        if (lockon && lockOnTarget != null)
+        {
+            Vector3 targetDir = lockOnTransform.position - transform.position;
+            targetDir.Normalize();
+            // targetDir.y = 0;
+
+            if(targetDir == Vector3.zero)
+            {
+                targetDir = transform.forward;
+            }
+
+            Quaternion targetRot = Quaternion.LookRotation(targetDir);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, d * 9);
+            lookAngle = transform.eulerAngles.y;
+
+            return;
         }
 
 
         lookAngle += smoothX * targetSpeed;
         transform.rotation = Quaternion.Euler(0, lookAngle, 0);
-
-        tiltAngle -= smoothY * targetSpeed;
-        tiltAngle = Mathf.Clamp(tiltAngle, minAngle, maxAngle);
-        pivot.localRotation = Quaternion.Euler(tiltAngle, 0, 0);
     }
 
 }

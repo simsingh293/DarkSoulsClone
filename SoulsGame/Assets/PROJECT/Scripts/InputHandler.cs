@@ -20,6 +20,13 @@ public class InputHandler : MonoBehaviour
     bool lt_Input;
     float lt_axis;
 
+    bool leftAxis_down;
+    bool rightAxis_down;
+
+    float b_timer;
+    float rt_timer;
+    float lt_timer;
+
     StateManager states;
     CameraManager cameraManager;
 
@@ -32,24 +39,28 @@ public class InputHandler : MonoBehaviour
         states.Init();
 
         cameraManager = CameraManager.singleton;
-        cameraManager.Init(this.transform);
+        cameraManager.Init(states);
     }
 
 
     private void FixedUpdate()
     {
         delta = Time.fixedDeltaTime;
-        GetInput();
         UpdateStates();
         states.FixedTick(delta);
         cameraManager.Tick(delta);
 
+        
+        ResetInputAndStates();
     }
 
     void Update()
     {
         delta = Time.deltaTime;
         states.Tick(delta);
+        GetInput();
+
+        Debug.Log(b_timer);
     }
 
 
@@ -65,20 +76,19 @@ public class InputHandler : MonoBehaviour
         a_Input = Input.GetButton("A");
         b_Input = Input.GetButton("B");
         x_Input = Input.GetButton("X");
-        y_Input = Input.GetButton("Y");
+        y_Input = Input.GetButtonUp("Y");
 
         rb_Input = Input.GetButton("RB");
         lb_Input = Input.GetButton("LB");
         rt_Input = Input.GetButton("RT"); // for keyboard
         lt_Input = Input.GetButton("LT"); // for keyboard
 
+        rightAxis_down = Input.GetButtonUp("LockOn");
 
-
-
-
-
-
-
+        if (b_Input)
+        {
+            b_timer += delta;
+        }
 
         //rt_axis = Input.GetAxis("RT"); // for controller
         //if(rt_axis != 0)
@@ -107,15 +117,18 @@ public class InputHandler : MonoBehaviour
         float m = Mathf.Abs(horizontal) + Mathf.Abs(vertical);
         states.moveAmount = Mathf.Clamp01(m);
 
+        //states.dodgeInput = b_Input;
 
-        if (b_Input)
+
+        if (b_Input && b_timer > 0.5f)
         {
             states.run = (states.moveAmount > 0);
         }
-        else
+
+        if (!b_Input && b_timer > 0 && b_timer < 0.5f)
         {
-            states.run = false;
-        }
+            states.dodgeInput = true;
+        }        
 
         
         states.rb = rb_Input;
@@ -128,8 +141,44 @@ public class InputHandler : MonoBehaviour
         {
             states.isTwoHanded = !states.isTwoHanded;
             states.HandleTwoHanded();
+            y_Input = false;
         }
 
+        if (rightAxis_down)
+        {
+            
+            states.lockOn = !states.lockOn;
 
+            if(states.lockOnTarget == null)
+            {
+                states.lockOn = false;
+            }
+
+            cameraManager.lockOnTarget = states.lockOnTarget;
+            states.lockOnTransform = cameraManager.lockOnTransform;
+            cameraManager.lockon = states.lockOn;
+
+            
+
+            rightAxis_down = false;
+        }
+    }
+
+    void ResetInputAndStates()
+    {
+        if (!b_Input)
+        {
+            b_timer = 0;
+        }
+
+        if (states.dodgeInput)
+        {
+            states.dodgeInput = false;
+        }
+
+        if (states.run)
+        {
+            states.run = false;
+        }
     }
 }

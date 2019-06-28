@@ -9,6 +9,7 @@ public class StateManager : MonoBehaviour
     public float runSpeed = 3.5f;
     public float rotateSpeed = 5;
     public float distGround = 0.5f;
+    public float rollSpeed = 1.0f;
 
     [Header("States")]
     public bool onGround;
@@ -17,6 +18,12 @@ public class StateManager : MonoBehaviour
     public bool attacking;
     public bool canMove;
     public bool isTwoHanded;
+    
+
+    [Header("Other")]
+    public EnemyTarget lockOnTarget;
+    public Transform lockOnTransform;
+    public AnimationCurve roll_curve;
 
     [Header("Inputs")]
     public float vertical;
@@ -24,12 +31,14 @@ public class StateManager : MonoBehaviour
     public float moveAmount;
     public Vector3 moveDir;
     public bool rt, rb, lt, lb;
+    public bool dodgeInput;
 
     [Header("Components")]
     public GameObject _activeModel;
     public Animator _anim;
     public Rigidbody _rb;
     public AnimatorHook a_hook;
+    public ActionManager actionManager;
 
     public float delta;
     public LayerMask ignoreLayers;
@@ -43,6 +52,9 @@ public class StateManager : MonoBehaviour
         _rb.angularDrag = 999;
         _rb.drag = 4;
         _rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+
+        actionManager = GetComponent<ActionManager>();
+        actionManager.Init();
 
         a_hook = _activeModel.AddComponent<AnimatorHook>();
         a_hook.Init(this);
@@ -82,9 +94,15 @@ public class StateManager : MonoBehaviour
             return;
         }
 
+
+
+        //a_hook.rootMotionMultiplier = 1;
+        a_hook.CloseRoll();
+        HandleDodges();
+
+
+
         _anim.applyRootMotion = false;
-
-
         if(moveAmount > 0 || !onGround )
         {
             _rb.drag = 0;
@@ -112,20 +130,30 @@ public class StateManager : MonoBehaviour
             lockOn = false;
         }
 
-        if (!lockOn)
-        {
-            Vector3 targetDir = moveDir;
-            targetDir.y = 0;
-            if (targetDir == Vector3.zero)
-            {
-                targetDir = transform.forward;
-            }
-            Quaternion tr = Quaternion.LookRotation(targetDir);
-            Quaternion targetRotation = Quaternion.Slerp(transform.rotation, tr, delta * moveAmount * rotateSpeed);
-            transform.rotation = targetRotation; 
-        }
+        Vector3 targetDir = (lockOn == false) ? moveDir
+            : (lockOnTransform != null) ?
+            lockOnTransform.position - transform.position
+            : moveDir;
 
-        HandleMovementAnimations();
+        targetDir.y = 0;
+        if (targetDir == Vector3.zero)
+        {
+            targetDir = transform.forward;
+        }
+        Quaternion tr = Quaternion.LookRotation(targetDir);
+        Quaternion targetRotation = Quaternion.Slerp(transform.rotation, tr, delta * moveAmount * rotateSpeed);
+        transform.rotation = targetRotation;
+
+
+        _anim.SetBool("LockOn", lockOn);
+        
+        if(!lockOn)
+        {
+            HandleMovementAnimations();
+        }
+        else
+        {
+            HandleLockOnAnimations(moveDir);}
 
 
 
@@ -140,7 +168,58 @@ public class StateManager : MonoBehaviour
     }
 
 
+    void HandleDodges()
+    {
+        if (!dodgeInput)
+        {
+            return;
+        }
 
+        float v = vertical;
+        float h = horizontal;
+
+        if (lockOn == false)
+        {
+            v = (moveAmount > 0.3f) ? 1 : 0;
+            h = 0;
+        }
+        else
+        {
+            if (Mathf.Abs(v) < 0.3f)
+            {
+                v = 0;
+            }
+            if (Mathf.Abs(h) < 0.3f)
+            {
+                h = 0;
+            }
+        }
+
+        if (v != 0)
+        {
+            if (moveDir == Vector3.zero)
+            {
+                moveDir = transform.forward;
+            }
+
+            Quaternion targetRot = Quaternion.LookRotation(moveDir);
+            transform.rotation = targetRot; 
+            a_hook.InitForRoll();
+            a_hook.rootMotionMultiplier = rollSpeed;
+        }
+        else
+        {
+            a_hook.rootMotionMultiplier = 1.3f;
+        }
+
+
+        _anim.SetFloat("Vertical", v);
+        _anim.SetFloat("Horizontal", h);
+
+        canMove = false;
+        attacking = true;
+        _anim.CrossFade("Dodges", 0.2f);
+    }
 
 
 
@@ -196,6 +275,16 @@ public class StateManager : MonoBehaviour
     public void HandleTwoHanded()
     {
         _anim.SetBool("TwoHanded", isTwoHanded);
+    }
+
+    void HandleLockOnAnimations(Vector3 moveDir)
+    {
+        Vector3 relativeDir = transform.InverseTransformDirection(moveDir);
+        float h = relativeDir.x;
+        float v = relativeDir.z;
+
+        _anim.SetFloat("Vertical", v, 0.2f, delta);
+        _anim.SetFloat("Horizontal", h, 0.2f, delta);
     }
 
 
