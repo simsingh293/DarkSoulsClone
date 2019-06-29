@@ -19,7 +19,7 @@ public class WeaponCollisions : MonoBehaviour
         if (collision.gameObject.tag == "Enemy" && !states._anim.GetBool("CanMove"))
         {
             obj.SetActive(false);
-            states.ChangeHealth(-10);
+            //states.ChangeHealth(-10);
         }
     }
 }

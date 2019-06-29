@@ -9,6 +9,11 @@ TagManager:
   - HealthPickup
   - PowerUp
   - Bullet
+  - MultipleDoorTrigger
+  - DoorTrigger
+  - BreakableParts
+  - BreakableTrigger
+  - EndGameItem
   layers:
   - Default
   - TransparentFX

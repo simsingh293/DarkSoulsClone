@@ -14,6 +14,7 @@ public class StateManager : MonoBehaviour
     public int score = 0;
     public int Max_Health = 100;
     public int Current_Health;
+    public bool EndItemFound = false;
 
     [Header("States")]
     public bool onGround;

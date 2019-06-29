@@ -4,17 +4,41 @@ using UnityEngine;
 
 public class BulletBehaviour : MonoBehaviour
 {
-    Rigidbody rb;
-    // Start is called before the first frame update
-    void Start()
+    private Rigidbody _rb;
+    public float _ShotForce = 10.0f;
+    public Vector3 _BulletSize = new Vector3(.3f, .3f, .3f);
+
+    void Awake()
     {
-        rb = GetComponent<Rigidbody>();
-        rb.AddForce(transform.forward * 100, ForceMode.Force);
+        _rb = GetComponent<Rigidbody>();
+        //transform.localScale = _BulletSize;
+
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Start()
     {
-        
+        StopCoroutine(Disable());
+        _rb.AddForce(transform.forward * _ShotForce, ForceMode.Impulse);
+        StartCoroutine(Disable());
+    }
+
+
+    //private void OnEnable()
+    //{
+    //    StopCoroutine(Disable());
+    //    _rb.AddForce(transform.forward * _ShotForce, ForceMode.Impulse);
+    //    StartCoroutine(Disable());
+    //}
+
+    public void SetShotForce(float force)
+    {
+        _ShotForce = force;
+    }
+
+    IEnumerator Disable()
+    {
+        yield return new WaitForSeconds(2);
+        Destroy(this);
+        //transform.parent = GameObject.Find("Magazine").GetComponent<Transform>();
     }
 }

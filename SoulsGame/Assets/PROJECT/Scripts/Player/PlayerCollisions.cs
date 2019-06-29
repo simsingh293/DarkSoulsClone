@@ -35,6 +35,12 @@ public class PlayerCollisions : MonoBehaviour
             obj.SetActive(false);
             states.poweredUp = true;
         }
+
+        if(obj.tag == "EndGameItem")
+        {
+            obj.SetActive(false);
+            states.EndItemFound = true;
+        }
     }
 
 
@@ -46,7 +52,10 @@ public class PlayerCollisions : MonoBehaviour
     {
         if (other.gameObject.tag == "DoorTrigger")
         {
-            other.gameObject.GetComponent<TriggerDoor>().ActivateDoor();
+            if (states.EndItemFound)
+            {
+                other.gameObject.GetComponent<TriggerDoor>().ActivateDoor();
+            }
         }
         else if (other.gameObject.tag == "MultipleDoorTrigger")
         {
