@@ -10,6 +10,8 @@ public class StateManager : MonoBehaviour
     public float rotateSpeed = 5;
     public float distGround = 0.5f;
     public float rollSpeed = 1.0f;
+    public int Max_Health = 100;
+    public int Current_Health;
 
     [Header("States")]
     public bool onGround;
@@ -39,6 +41,9 @@ public class StateManager : MonoBehaviour
     public Rigidbody _rb;
     public AnimatorHook a_hook;
     public ActionManager actionManager;
+    public InventoryManager inventoryManager;
+    public WeaponCollisions weaponCollisions;
+    public PlayerCollisions playerCollisions;
 
     public float delta;
     public LayerMask ignoreLayers;
@@ -53,11 +58,22 @@ public class StateManager : MonoBehaviour
         _rb.drag = 4;
         _rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 
+        inventoryManager = GetComponent<InventoryManager>();
+        inventoryManager.Init();
+
         actionManager = GetComponent<ActionManager>();
-        actionManager.Init();
+        actionManager.Init(this);
 
         a_hook = _activeModel.AddComponent<AnimatorHook>();
         a_hook.Init(this);
+
+        weaponCollisions = GetComponentInChildren<WeaponCollisions>();
+        weaponCollisions.Init(this);
+
+        playerCollisions = GetComponent<PlayerCollisions>();
+        playerCollisions.Init(this);
+
+        Current_Health = Max_Health;
 
         gameObject.layer = 8;
         ignoreLayers = ~(1 << 9);
@@ -233,10 +249,16 @@ public class StateManager : MonoBehaviour
 
         string targetAnim = null;
 
-        if (rb) { targetAnim = "OH_Slash 1"; }
-        if (rt) { targetAnim = "OH_Slash 2"; }
-        if (lb) { targetAnim = "OH_Slash 3"; }
-        if (lt) { targetAnim = "TH_Slash 1"; }
+
+
+        Action slot = actionManager.GetActionSlot(this);
+        if(slot == null)
+        {
+            return;
+        }
+        targetAnim = slot.targetAnimation;
+
+
 
         if(string.IsNullOrEmpty(targetAnim))
         {
@@ -275,6 +297,15 @@ public class StateManager : MonoBehaviour
     public void HandleTwoHanded()
     {
         _anim.SetBool("TwoHanded", isTwoHanded);
+
+        if (isTwoHanded)
+        {
+            actionManager.UpdateActionsTwoHanded();
+        }
+        else
+        {
+            actionManager.UpdateActionsOneHanded();
+        }
     }
 
     void HandleLockOnAnimations(Vector3 moveDir)
@@ -292,6 +323,22 @@ public class StateManager : MonoBehaviour
     {
         _anim.SetBool("Running", run);
         _anim.SetFloat("Vertical", moveAmount, 0.4f, delta);
+    }
+
+    public void ChangeHealth(int value)
+    {
+        if (Current_Health + value > Max_Health)
+        {
+            Current_Health = Max_Health;
+        }
+        else if (Current_Health - value < 0)
+        {
+            Current_Health = 0;
+        }
+        else
+        {
+            Current_Health += value;
+        }
     }
 
     void SetupAnimator()
