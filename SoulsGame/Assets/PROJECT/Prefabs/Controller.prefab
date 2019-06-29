@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1186376574296032400}
   - component: {fileID: 1186376574296032413}
   - component: {fileID: 1186376574296032414}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Controller
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -96,6 +96,8 @@ MonoBehaviour:
   rotateSpeed: 9
   distGround: 0.5
   rollSpeed: 8
+  Max_Health: 100
+  Current_Health: 0
   onGround: 0
   run: 0
   lockOn: 0
@@ -161,6 +163,8 @@ MonoBehaviour:
   a_hook: {fileID: 0}
   actionManager: {fileID: 0}
   inventoryManager: {fileID: 0}
+  weaponCollisions: {fileID: 0}
+  playerCollisions: {fileID: 0}
   delta: 0
   ignoreLayers:
     serializedVersion: 2

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class StateManager : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class StateManager : MonoBehaviour
     public float rotateSpeed = 5;
     public float distGround = 0.5f;
     public float rollSpeed = 1.0f;
+    public int score = 0;
     public int Max_Health = 100;
     public int Current_Health;
 
@@ -20,6 +22,7 @@ public class StateManager : MonoBehaviour
     public bool attacking;
     public bool canMove;
     public bool isTwoHanded;
+    public bool poweredUp = false;
     
 
     [Header("Other")]
@@ -34,6 +37,11 @@ public class StateManager : MonoBehaviour
     public Vector3 moveDir;
     public bool rt, rb, lt, lb;
     public bool dodgeInput;
+    
+    [Header("UI")]
+    public Text scoreText;
+    public RectTransform HealthBar;
+    public RectTransform PowerIndicator;
 
     [Header("Components")]
     public GameObject _activeModel;
@@ -178,9 +186,26 @@ public class StateManager : MonoBehaviour
     public void Tick(float d)
     {
         delta = d;
-        onGround = OnGround();
 
+        UpdateHealthBar();
+
+        if (poweredUp)
+        {
+            PowerIndicator.gameObject.SetActive(true);
+        }
+        else
+        {
+            PowerIndicator.gameObject.SetActive(false);
+
+        }
+
+        onGround = OnGround();
         _anim.SetBool("OnGround", onGround);
+    }
+
+    void UpdateHealthBar()
+    {
+        HealthBar.sizeDelta = new Vector2(Current_Health * 2, 30);
     }
 
 
@@ -305,6 +330,7 @@ public class StateManager : MonoBehaviour
         else
         {
             actionManager.UpdateActionsOneHanded();
+            poweredUp = false;
         }
     }
 

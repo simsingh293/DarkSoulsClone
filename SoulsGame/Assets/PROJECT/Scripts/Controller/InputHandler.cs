@@ -76,7 +76,10 @@ public class InputHandler : MonoBehaviour
         a_Input = Input.GetButton("A");
         b_Input = Input.GetButton("B");
         x_Input = Input.GetButton("X");
-        y_Input = Input.GetButtonUp("Y");
+        if (states.poweredUp)
+        {
+            y_Input = Input.GetButtonUp("Y");
+        }
 
         rb_Input = Input.GetButton("RB");
         lb_Input = Input.GetButton("LB");

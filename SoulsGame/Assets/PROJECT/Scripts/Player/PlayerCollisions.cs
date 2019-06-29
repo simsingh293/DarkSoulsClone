@@ -19,7 +19,8 @@ public class PlayerCollisions : MonoBehaviour
         if (obj.tag == "Collectible")
         {
             obj.SetActive(false);
-            states.ChangeHealth(-30);
+            states.score++;
+            states.scoreText.text = "Score: " + states.score;
 
         }
 
@@ -28,5 +29,47 @@ public class PlayerCollisions : MonoBehaviour
             obj.SetActive(false);
             states.ChangeHealth(10);
         }
+
+        if (obj.tag == "PowerUp")
+        {
+            obj.SetActive(false);
+            states.poweredUp = true;
+        }
     }
+
+
+
+
+
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "DoorTrigger")
+        {
+            other.gameObject.GetComponent<TriggerDoor>().ActivateDoor();
+        }
+        else if (other.gameObject.tag == "MultipleDoorTrigger")
+        {
+            if (other.GetComponent<Renderer>().material.color != Color.red)
+            {
+                other.GetComponent<Renderer>().material.color = Color.red;
+            }
+        }
+        else if (other.gameObject.tag == "BreakableTrigger")
+        {
+            other.gameObject.GetComponent<BreakDoorTrigger>().ActivateDoor();
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.tag == "DoorTrigger")
+        {
+            other.gameObject.GetComponent<TriggerDoor>().CloseDoor();
+        }
+    }
+
+
+
+
 }
