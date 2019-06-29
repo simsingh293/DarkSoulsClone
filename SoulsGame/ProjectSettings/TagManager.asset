@@ -14,6 +14,11 @@ TagManager:
   - BreakableParts
   - BreakableTrigger
   - EndGameItem
+  - Water
+  - Column
+  - TrapTrigger
+  - Fire
+  - ObserverEnemy
   layers:
   - Default
   - TransparentFX
@@ -25,7 +30,7 @@ TagManager:
   - 
   - Controller
   - DamageColliders
-  - 
+  - Triggers
   - 
   - 
   - 

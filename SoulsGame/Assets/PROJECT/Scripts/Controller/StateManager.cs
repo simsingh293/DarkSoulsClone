@@ -24,12 +24,14 @@ public class StateManager : MonoBehaviour
     public bool canMove;
     public bool isTwoHanded;
     public bool poweredUp = false;
+    public bool dead;
     
 
     [Header("Other")]
     public EnemyTarget lockOnTarget;
     public Transform lockOnTransform;
     public AnimationCurve roll_curve;
+    public ParticleSystem flameParticles;
 
     [Header("Inputs")]
     public float vertical;
@@ -84,6 +86,9 @@ public class StateManager : MonoBehaviour
 
         Current_Health = Max_Health;
 
+        flameParticles.Pause();
+
+
         gameObject.layer = 8;
         ignoreLayers = ~(1 << 9);
 
@@ -93,6 +98,8 @@ public class StateManager : MonoBehaviour
     public void FixedTick(float d)
     {
         delta = d;
+
+        if (dead) { return; }
 
         DetectAction();
 
@@ -189,6 +196,7 @@ public class StateManager : MonoBehaviour
         delta = d;
 
         UpdateHealthBar();
+        CheckIfDead();
 
         if (poweredUp)
         {
@@ -327,11 +335,13 @@ public class StateManager : MonoBehaviour
         if (isTwoHanded)
         {
             actionManager.UpdateActionsTwoHanded();
+            flameParticles.Play();
         }
         else
         {
             actionManager.UpdateActionsOneHanded();
             poweredUp = false;
+            flameParticles.Stop();
         }
     }
 
@@ -365,6 +375,14 @@ public class StateManager : MonoBehaviour
         else
         {
             Current_Health += value;
+        }
+    }
+
+    public void CheckIfDead()
+    {
+        if(Current_Health <= 0)
+        {
+            dead = true;
         }
     }
 

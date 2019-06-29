@@ -42,7 +42,7 @@ public class Subject : MonoBehaviour
 
     void AddObservers()
     {
-        _EnemyOBJ = GameObject.FindGameObjectsWithTag("Enemy");
+        _EnemyOBJ = GameObject.FindGameObjectsWithTag("ObserverEnemy");
 
         for (int i = 0; i < _EnemyOBJ.Length; i++)
         {

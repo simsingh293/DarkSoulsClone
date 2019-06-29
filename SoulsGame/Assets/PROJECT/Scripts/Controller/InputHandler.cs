@@ -60,7 +60,7 @@ public class InputHandler : MonoBehaviour
         states.Tick(delta);
         GetInput();
 
-        Debug.Log(b_timer);
+        //Debug.Log(b_timer);
     }
 
 

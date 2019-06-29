@@ -41,11 +41,36 @@ public class PlayerCollisions : MonoBehaviour
             obj.SetActive(false);
             states.EndItemFound = true;
         }
+
+        if(obj.tag == "ObserverEnemy")
+        {
+            Subject subject = obj.GetComponent<Subject>();
+            subject._Player = this.gameObject;
+        }
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        GameObject obj = collision.gameObject;
+        
+
+        if(obj.tag == "Fire")
+        {
+            states.ChangeHealth(-1);
+        }
     }
 
 
 
+    private void OnTriggerStay(Collider other)
+    {
+        GameObject obj = other.gameObject;
 
+        if(obj.tag == "Fire")
+        {
+            states.ChangeHealth(-1);
+        }
+    }
 
 
     private void OnTriggerEnter(Collider other)
@@ -67,6 +92,13 @@ public class PlayerCollisions : MonoBehaviour
         else if (other.gameObject.tag == "BreakableTrigger")
         {
             other.gameObject.GetComponent<BreakDoorTrigger>().ActivateDoor();
+        }
+
+        else if(other.gameObject.tag == "TrapTrigger")
+        {
+            TrapTimer tt=  other.gameObject.GetComponent<TrapTimer>();
+
+            tt.StartTimer();
         }
     }
 
